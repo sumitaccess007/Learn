@@ -1,0 +1,151 @@
+Hello, Cloud Gurus and welcome to this lecture which is all about
+CloudFront.
+And CloudFront is Amazon's content delivery network or CDN.
+And this is a theoretical lecture to introduce the main concepts
+so that you have a good understanding before we go ahead and build our own
+CloudFront distribution later on. So what is CloudFront?
+Well, it is a content delivery network,
+which is a system of distributed servers which deliver web pages
+and other web content. And it's an easy,
+and cost-effective way to distribute content with low latency and
+high data-transfer speeds. So what does that mean? Well,
+this is all about making your web pages faster and CloudFront speeds up the
+distribution of your static and dynamic web content.
+So HTML, JavaScript, image files, videos,
+and web applications. So any web content that you can think of.
+And it's a much more efficient and performant way for geographically
+distributed users to access your content.
+So how does it all hang together? Well,
+imagine you are running a website located in the UK and
+you have many users based all around the world.
+And when a user browses to your website,
+the request is routed through many different networks to reach your server
+and the number of network hops and the distance the request needs to
+travel have a significant impact on the performance
+and responsiveness of your website.
+And the network latency is going to be different for each different location.
+And for users who are further away,
+they are going to experience greater latency and
+worse performance. So for example, users based in Australia,
+they might experience worse performance and greater latency.
+And they might think that the website seems less responsive than users based,
+say in India, for example,
+which is geographically closer to London.
+So how can we improve performance and make it more consistent for
+everybody. Well, this is where CloudFront comes in.
+So imagine you're running a website from London and here are all your users.
+Instead of each user accessing your website directly from the server in
+London,
+instead we introduce this concept of edge locations.
+And an edge location is simply a collection of servers which are in
+geographically-dispersed data centers.
+And these edge locations are used by CloudFront to keep a cache of
+copies of your objects. So copies of your HTML files,
+your images, and the content that you are serving.
+And this means that instead of requesting content from your server located in
+London,
+users can access that content from the edge location instead,
+which is physically much closer to them than the main server in London.
+So the way it works is that once the request is made,
+the edge location forwards the request onto the server located in London
+and it downloads the files requested and caches them locally. So
+this means that next time the user requests the file,
+or if another user comes along and wants to access the same file,
+they can access directly from the edge location.
+And this provides a much faster response time.
+And it means that your requests are only going to the local edge location
+and they're not going all the way to London.
+So let's review some of the CloudFront terminology that you will need to know
+for the exam. So, first of all,
+we have CloudFront edge locations,
+and this is the location where the content is cached.
+And it's separate to an AWS region or availability zone.
+And then we have the CloudFront origin.
+And this is the origin of all the files that the distribution would serve.
+And this can be an S3 bucket, an EC2 instance,
+or an elastic load balancer, or route 53 address.
+And it can also be your own server in your own data center.
+And then finally, we have the CloudFront distribution.
+And this is the name given to the origin and configuration settings for the
+content that you wish to distribute using the CloudFront content delivery
+network. And if we head back to our diagram,
+here is our edge location. Here is our origin.
+And the CloudFront distribution is the name given to the origin and
+configuration settings for the content that we are distributing. Now,
+the reason we use CloudFront is to improve the performance of a
+website for remote users.
+And you can deliver your entire website using CloudFront.
+And AWS operates a global network of over 200 edge
+locations. And with CloudFront,
+requests for your content are automatically routed to the nearest
+edge location. So content is delivered with the best possible performance,
+no matter where your users are located in the world.
+And this allows you to optimize performance for users accessing your website
+from all around the world. And here at ACG,
+we actually use CloudFront ourselves,
+and we have a lot of users from Asia, Africa, North America,
+South America, Europe, and Australia. And by using CloudFront,
+that helps keep performance consistent for everybody. Now,
+CloudFront is optimized to work with other AWS services.
+So it's really well integrated with services like S3, EC2,
+elastic load balancer, and Route 53.
+And that makes it really easy to configure.
+And it also works seamlessly with any non-AWS origin server,
+which stores the original definitive versions of your files and your website.
+Now with CloudFront,
+objects are cached and they are cached for a period of time,
+which is their time to live or TTL. And the default TTL
+is one day. And when the TTL is up,
+the object is automatically cleared from the cache.
+Now you can clear an object from the cache yourself before the TTL is up,
+but you will be charged for doing that. For example,
+if you had a new version of an object,
+a new image or new version of one of your webpages,
+you can actually go in there and clear the cache yourself to make sure that when
+your users try to access that file, they are going to get the latest version.
+And CloudFront technology,
+it's actually also used with another service called S3 transfer
+acceleration. And S3 transfer acceleration enables fast, easy,
+and secure transfers of files over long distances between your end
+users and an S3 bucket.
+So we can use CloudFront to accelerate the upload of files into
+S3.
+So you upload your file to the edge location and when it arrives at the edge
+location,
+it's routed to Amazon S3 over an optimized network path.
+So let's just have a look at a quick example.
+We have our S3 bucket located here in London,
+and again, we've got our users geographically distributed,
+and just imagine all these users need to upload some files into this S3
+bucket. So instead of uploading directly to the bucket in London,
+which could take a long time for some of these users who are furthest away,
+instead, they can upload their file into the CloudFront edge location.
+And from there,
+the edge location will transfer that file into the London-based bucket,
+using the fast networks within AWS.
+And this is a much faster way for these users to upload their files into
+S3. So let's take a look at some of our exam tips.
+So we've got edge locations,
+and this is the location where the content will be cached and it's separate to
+an AWS region or availability zone. We also have the origin,
+and this is the origin of the files that the distribution will serve.
+And it can be an S3 bucket, an EC2 instance,
+or an elastic load balancer or route 53 address.
+And it can also be a server in your own data center.
+And the CloudFront distribution is the name given to the origin and
+configuration settings for the content that we are distributing.
+Remember that edge locations are not just read only,
+and you can write to them as well. For example,
+you can put an object onto them as well.
+And this is exactly what's happening with S3 transfer acceleration.
+So CloudFront edge locations are utilized by S3 transfer
+acceleration to reduce latency for S3 uploads,
+and you can upload your files quickly over long distances using
+S3 transfer acceleration.
+And finally objects are cached within CloudFront for the life of the TTL
+or time to live. The default time to live is one day.
+And you can clear out the cached objects if you are updating your website more
+frequently than once a day, but you will be charged for doing so.
+So that is The end of this lecture. And in our next lecture,
+we're going to be setting up our own CloudFront distribution.
+So please join me in the next lecture. If you've got time. Thank you.
