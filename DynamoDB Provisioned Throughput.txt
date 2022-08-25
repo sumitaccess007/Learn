@@ -1,99 +1,40 @@
-Hello Cloud Gurus, and welcome to this lecture,
-which is going to cover DynamoDB provisioned throughput. Now,
-DynamoDB provisioned throughput is measured in capacity units.
-And when you first create your DynamoDB table,
-you can specify your requirements in terms of read capacity units
-and write capacity units.
-And it's these read capacity units and write capacity units which define how
-much data you can read and write to your DynamoDB table.
-Now for each write capacity unit, you get one 1 kilobyte,
-write per second. And for each read capacity unit,
-you get one strongly consistent read of 4 kilobytes per second,
-or 2 eventually consistent reads of 4 kilobytes per
-second. And of course, eventually consistent is the default.
-And with eventually consistent,
-you're getting double the throughput that you will get from a strongly
-consistent read.
-So imagine a table like this storing customer order data.
-And imagine we've configured this table with 5 read capacity units
-and 5 write capacity units. Well,
-this configuration will be able to perform five 4 kilobyte strongly
-consistent reads, which equals 20 kilobytes per second,
-or twice as many eventually consistent reads.
-So 40 kilobytes per second,
-and five 1 kilobyte writes per second.
-So 5 kilobytes per second.
-And if your application reads or writes larger items,
-then it's going to consume more capacity units,
-and it will cost you more as well.
-So now I have a challenge for you. Imagine you have an application,
-and your application needs to read 80 items per second from your
-DynamoDB table. Each item is 3 kilobytes in size,
-and you need strongly consistent reads. And remember,
-each read capacity unit gives you 1 full kilobyte strongly
-consistent read per second.
-So how many read capacity units do you think you'll need?
-And if you'd like to have a go at calculating that on your own,
-you can pause the video now while you work out your answer,
-and I will tell you how I calculated it in the next slide.
-So this is how I worked it out. First of all,
-calculate how many full kilobyte read capacity units are needed for each
-read. So to do that,
-I took the size of each item and divided it by 4 kilobytes.
-So that's 3 divided by 4,
-which is 0.75.
-I then rounded that up to the nearest whole number to get 1.
-So each read operation will need 1 read capacity unit.
-And then finally, I multiplied that by the number of read operations per second.
-So 1 multiplied by 80 is 80 read capacity units
-required for strongly consistent reads.
-But what if you now need eventually consistent reads? Well,
-you do the same calculation. However,
-as this is for eventually consistent reads, you get two,
-4 kilobyte reads per second,
-or double the throughput of strongly consistent reads.
-So if we need 80 read capacity units for strongly consistent,
-how many do you think we need for eventually consistent?
-And once you get your head around it, it's actually really easy.
-So you can pause the video now if you'd like to work it out by yourself.
-Otherwise, continue if you'd like to hear how I worked it out.
-So the way I normally work it out is I calculate the value for strongly
-consistent. And then I divide it by 2 to get eventually consistent.
-So I took the size of each item divided by 4k,
-which was 0.75,
-round up to the nearest whole number to get 1,
-multiply it by the number of reads per second to get 80.
-And then I took 80 and divide it by 2 to get 40.
-So you only need 40 read capacity units for eventually consistent
-reads.
-And then my last challenge is based on write capacity units.
-So imagine you need to write 100 items per second to your DynamoDB
-table.
-And each item is 512 bytes in size.
-And remember, each write capacity unit gives you one,
-1 kilobyte write per second.
-How many write capacity units do you think you'll need?
-So you can pause the video now if you'd like to try and work it out for
-yourself. Otherwise, continue with me to hear how I worked it out.
-So to calculate the write capacity units, first of all,
-I worked out how many capacity units we need for each write.
-So I take the size of each item and divide it by 1 kilobyte.
-So that will be 512 bytes divided by 1024
-bytes. And that gives `me 0.5.
-Then I round that up to the nearest whole number.
-So each write will need 1 write capacity unit per write
-operation.
-Then multiply that by the number of writes required per second.
-So that's 1 times 100 writes per second equals 100 write
-capacity units. So what are my exam tips?
-Well, just remember that DynamoDB provisioned throughput is measured in
-capacity units,
-and each write capacity unit gives you one 1 kilobyte write per
-second. For strongly consistent reads,
-each read capacity unit gives you one 4 kilobyte read per second,
-and for eventually consistent reads, which is the default,
-each read capacity unit gives you two 4 kilobyte reads per second,
-or double a throughput of strongly consistent.
-So that is the end of this lecture. If you have any questions,
-please let me know. Otherwise, feel free to move on to the next lecture.
-Thank you.
+---------------------------------------
+--- DynamoDB provisioned throughput ---
+---------------------------------------
+- DynamoDB provisioned throughput is measured in capacity units. And when you first create your DynamoDB table, you can specify your requirements in terms of read capacity units and write capacity units.
+- And it's these read capacity units and write capacity units which define how much data you can read and write to your DynamoDB table.
+- For each write capacity unit, you get one 1 kilobyte, write per second.
+- For each read capacity unit, you get one strongly consistent read of 4 kilobytes per second, or 2 eventually consistent reads of 4 kilobytes per second. And of course, eventually consistent is the default. And with eventually consistent, you're getting double the throughput that you will get from a strongly consistent read.
+
+- So imagine a table like this storing customer order data. And imagine we've configured this table with 5 read capacity units and 5 write capacity units.
+- This configuration will be able to perform five 4 kilobyte strongly consistent reads, which equals 20 kilobytes per second, or twice as many eventually consistent reads. So 40 kilobytes per second, and five 1 kilobyte writes per second. So 5 kilobytes per second.
+
+- And if your application reads or writes larger items, then it's going to consume more capacity units, and it will cost you more as well.
+
+--- Challenge on Read ---
+- So now I have a challenge for you. Imagine you have an application, and your application needs to read 80 items per second from your DynamoDB table. Each item is 3 kilobytes in size, and you need strongly consistent reads.
+- And remember, each read capacity unit gives you 1 full kilobyte strongly consistent read per second.
+- So how many read capacity units do you think you'll need?
+
+- So this is how I worked it out.
+- First of all, calculate how many full kilobyte read capacity units are needed for each read. So to do that, I took the size of each item and divided it by 4 kilobytes. So that's 3 divided by 4, which is 0.75. I then rounded that up to the nearest whole number to get 1. So each read operation will need 1 read capacity unit. And then finally, I multiplied that by the number of read operations per second.
+- So 1 multiplied by 80 is 80 read capacity units required for strongly consistent reads.
+
+- But what if you now need eventually consistent reads? Well, you do the same calculation. However, as this is for eventually consistent reads, you get two, 4 kilobyte reads per second, or double the throughput of strongly consistent reads. So if we need 80 read capacity units for strongly consistent, how many do you think we need for eventually consistent?
+- So the way I normally work it out is I calculate the value for strongly consistent. And then I divide it by 2 to get eventually consistent. So I took the size of each item divided by 4k, which was 0.75, round up to the nearest whole number to get 1, multiply it by the number of reads per second to get 80. And then I took 80 and divide it by 2 to get 40. So you only need 40 read capacity units for eventually consistent reads.
+
+--- Challenge on Write ---
+- And then my last challenge is based on write capacity units. So imagine you need to write 100 items per second to your DynamoDB table. And each item is 512 bytes in size. And remember, each write capacity unit gives you one, 1 kilobyte write per second.
+- How many write capacity units do you think you'll need?
+- So to calculate the write capacity units, first of all, I worked out how many capacity units we need for each write. So I take the size of each item and divide it by 1 kilobyte.So that will be 512 bytes divided by 1024 bytes. And that gives `me 0.5. Then I round that up to the nearest whole number.
+- So each write will need 1 write capacity unit per write operation.Then multiply that by the number of writes required per second. So that's 1 times 100 writes per second equals 100 write
+capacity units.
+
+
+-----------------
+--- Exam tips ---
+-----------------
+- Just remember that DynamoDB provisioned throughput is measured in capacity units, and each write capacity unit gives you one 1 kilobyte write per second.
+- For strongly consistent reads, each read capacity unit gives you one 4 kilobyte read per second.
+- For eventually consistent reads, which is the default, each read capacity unit gives you two 4 kilobyte reads per second, or double a throughput of strongly consistent.
+
