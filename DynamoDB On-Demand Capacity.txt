@@ -1,0 +1,49 @@
+Hello Cloud Gurus, and welcome to this lecture,
+which is going to cover DynamoDB on-demand capacity.
+So what is on-demand capacity? Well,
+it's a pricing model for DynamoDB,
+and with the on-demand capacity model,
+charges will apply for reading and writing and storing your data
+in DynamoDB.
+And DynamoDB will instantly scale up and down based on the
+activity of your application,
+so based on the reads and writes to your table,
+rather than you specifying a set number of read and write capacity
+units when you first create the table.
+So this gives you a lot of flexibility in terms of the capacity for your
+DynamoDB table.
+And this is great for unpredictable workloads,
+new applications where you don't understand the use pattern yet,
+and when you only want to pay for what you use,
+or a kind of pay-per-request model.
+So which pricing model should you use? Well,
+you should use on-demand capacity when you have an unknown workload,
+unpredictable application traffic,
+the workload is spiky and you have short-lived peaks,
+and when you want a pay-per-use model. However,
+with on-demand capacity,
+it might be more difficult to predict the costs that you will be paying for your
+DynamoDB table,
+because DynamoDB will be scaling up and down based on the number of reads and
+writes. And the cost will be driven by the activity on your database,
+rather than you specifying the read and write capacity units at the
+beginning,
+whereas you should use provisioned capacity when read and write capacity
+requirements can be easily and accurately forecasted,
+when you have predictable application traffic,
+and when the application traffic is consistent or it increases gradually.
+And with provisioned capacity, of course,
+you have much more control over the cost of the capacity on your DynamoDB
+table. So onto our exam tips,
+and you just really need to understand the difference and when to use each
+pricing model.
+So use on-demand capacity when you've got unpredictable application traffic,
+or if you require a pay-per-use model,
+and use provisioned capacity when read and write capacity requirements
+can be accurately forecasted,
+when application traffic is consistent or it increases gradually.
+And it's also a good option.
+If you want to be more in control of your DynamoDB costs.
+So that is the end of this lecture. If you have any questions,
+please let me know. Otherwise, feel free to move on to the next lecture.
+Thank you.

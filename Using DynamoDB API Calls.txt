@@ -1,0 +1,115 @@
+Hello, Cloud Gurus, and welcome
+to this lecture where we'll review
+the DynamoDB API calls.
+We'll cover DynamoDB API calls in general.
+We'll look at some commonly used commands,
+consider an example;
+we'll look at the official AWS CLI command reference
+and my exam tips.
+So we can use API calls
+to programmatically interact
+with our DynamoDB table,
+for example, to query, delete, or add items.
+When we use the AWS CLI
+to run the get-item command,
+we are interacting with the DynamoDB GetItem API.
+And this is the application programming interface
+that allows us to programmatically interact
+with DynamoDB.
+And if the item requested is in the table,
+it will return it.
+So let's review the most commonly used commands.
+So we've got create table,
+which creates a new table.
+Put-item, which adds a new item into a table
+or replaces an old item with a new one.
+Get-item returns a set of attributes
+for an item with a given primary key.
+Update-item allows you to edit
+the attributes of an existing item,
+for example, add or delete attributes.
+There's update-table,
+which allows you to modify a table,
+for example, modify the provisioned throughput settings
+on the table.
+There's list-tables, which returns a list
+of the tables in your account.
+And these all the corresponding API calls.
+And you'll notice that the API call
+has a very similar name
+to the AWS CLI command.
+We then have describe-table,
+which returns information about the table,
+for example, the current status, the creation date,
+primary key and indexes, etc.
+There's scan, which reads every item in the table
+and returns all items and attributes.
+And you can use a FilterExpression
+if you'd like to return fewer items.
+So filter out some of the items
+that you don't want.
+There's query, which queries the table
+based on a partition key value that you provide.
+Delete-item allows you to delete an item
+based on its primary key.
+And delete-table deletes the whole table,
+including all of its items.
+And these are the corresponding API calls.
+And hopefully most of these
+will already be very familiar to you
+because we've already been using
+a lot of these commands in this course.
+But also, even when you're using the AWS console
+to interact with DynamoDB,
+these are some of the API calls
+that are being invoked under the hood.
+And you might be wondering, do I need to know
+all of these commands for the exam?
+Well, you should understand what they're used for
+at a high level,
+understand the differences between them,
+and also be aware that the user must have
+the correct identity and access management permissions
+to run the command in question,
+because without the right permissions,
+the command will not work.
+So let's take a look at an example.
+Imagine you have a team member
+who needs to add a new item into a table
+and replace an old item with a new one.
+They will need to run the put-item CLI command,
+which uses the PutItem API,
+and they will need identity
+and access management permissions to call PutItem.
+For more information,
+there is the official AWS command-line reference,
+and this lists all of the available commands,
+as well as how to use each one
+and some examples as well.
+And there's a link to this page
+in the Resources for this lesson.
+So it's there if you need it.
+But you do not need to memorize command syntax
+or options for each command.
+So for the exam, what do you need to know?
+Well, the main thing that you need to know
+is how you would use each of the common commands
+listed in this lesson,
+so when to use each command
+and what they are used for.
+You do not need to memorize command syntax.
+Understand that the CLI commands
+are making calls to the DynamoDB API
+and that the correct identity
+and access management permissions
+are required in order to successfully make an API call.
+For example, if you want to run the get-item command
+to return a set of attributes for a specific item,
+you are using the GetItem API call,
+and you will need the correct identity
+and access management permissions
+to allow you to run the GetItem API call.
+So that is it for this lesson.
+If you have any questions, please let me know.
+Otherwise I will see you in the next lesson.
+Thank you.
