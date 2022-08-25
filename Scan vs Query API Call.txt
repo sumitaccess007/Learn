@@ -1,155 +1,70 @@
-Hello Cloud Gurus, and welcome to this lecture.
-And this lecture is all about DynamoDB scan and query API
-calls.
-So there's 2 different ways of getting your information out of the database.
-We have scans and queries,
-and this lecture is just going to discuss the differences between the two of
-those. So let's get started. So what is a query?
-Well, a query operation finds items in your table based on the
-primary key attribute and also a distinct value to search
-for. For example,
-if you're looking for an item where the user ID is equal to 212,
-you're going to query the DynamoDB table based on the primary key of user ID,
-and the value will be 212,
-and that will select all the attributes for that item. So for example,
-if you were storing the first name, surname, email, et cetera,
-all those attributes would come up in that query.
-And you can use an optional sort key name and value to refine the results
-if you have multiple results. For example,
-if your sort key is a timestamp,
-you can refine the query to select only the items with a timestamp of the last 7
-days. So for example,
-you might want to query the last time a user logged into a forum,
-the last time they posted in a forum, that kind of thing.
-Now by default, a query returns all the attributes for the items,
-but you can use the ProjectionExpression parameter if you want the query to only
-return specific attributes that you're looking for. For example,
-if you only wanted to see the user ID and email address,
-rather than all the attributes for that item in the table.
-Results are always sorted by the sort key. If they're numeric,
-they're sorted in numeric order. And that by default is in ascending order,
-so 1, 2, 3, 4. And if they're ASCII characters,
-they are also sorted by default in ascending order.
-And you can reverse the order by setting the ScanIndexForward parameter to
-false. This only applies to queries, and unfortunately,
-they've called it ScanIndexForward,
-but it does only apply to queries. So just remember that.
-If you see any questions relating to ScanIndexForward parameter,
-it's relating to queries and not scan,
-and it's to reverse the order of the results from your query.
-By default, all queries are eventually consistent,
-but you can set them to be strongly consistent,
-but you need to explicitly set the query to be strongly consistent.
-So moving onto scans, what is a scan? Well,
-a scan operation examines every single item in the table.
-And by default, it returns all the data attributes. Once again,
-you can use the ProjectionExpression parameter to refine your scan results to
-return only the attributes you're looking for.
-And you can also filter the results of the scan once it's been run.
-But it's a lot easier to understand the difference between scans and queries if
-I actually show you in the console.
-So I'm going to move to the AWS console now so I can show you exactly what I
-mean. So here I am in the DynamoDB section,
-and I'm going to head to Tables,
-and this is the table that we set up at the beginning of this section when we
-created our very first DynamoDB table.
-And if you did that lab already,
-then you'll be able to try this yourself in your own table. Or if not,
-you can just follow along with me. So, first of all,
-I'm going to head to the ProductCatalog table
-and click on Items.
-And these are all the items in my ProductCatalog table.
-So first of all, I'm going to run a query.
-So I'm going to select Query in this dropdown,
-and I can query based on the partition key.
-And for this table, the partition key is the ID.
-So it's the product ID,
-and it's this attribute here in this ID column.
-So I can query based on one of these attribute IDs.
-Now it's already picked up that our partition key is the ID,
-and that it is a numerical value.
-And it's in this box here that we enter the value that we want to search for.
-So I'm going to search for a product with the product ID of 201, hit
-start Search,
-and it's found my product with the product ID of 201.
-So now let's compare this to a scan operation.
-So if we select Scan from the dropdown,
-click on Start Search, and it will give me the entire table.
-So then if I want to refine these results,
-then I need to add a filter.
-So I'm going to click on Add Filter,
-and I can create a filter based on any of these attributes,
-but I'm going to create a filter based on price. So in here,
-we add our attribute. It's going to be price.
-It's going to be a numerical value. So I'll change that to number,
-and you get a load of choices in here.
-So I can search for items of a specific price or greater than,
-or less than, or between 2 values.
-So I'm going to search for items with a price greater than 100.
-So I'm going to select greater than or equal to 100.
-Select Start Search. And it will apply that filter to my scan.
-But the one thing to remember with a scan is even when you're applying a filter,
-it's first dumping the data. So it's showing you the entire table,
-and then it's applying a filter on top of that to show us only the results we're
-looking for. So what should we use,
-a query or a scan? Well,
-a query is much more efficient than a scan because the scan dumps the entire
-table, then filters out the unwanted values to provide the desired result.
-And this adds the extra step of removing the data that you don't want.
-And as the table grows, the scan operation takes longer and longer.
-And a scan operation on a large table can actually use up the
-provision throughput for a large table in just one single operation.
-And there are some ways to improve performance.
-So you can reduce the impact of a query or scan by setting a smaller page
-size, which uses fewer read operations.
-For example, you can set the page size to return 40 items.
-And this means that you will end up with a larger number of small operations,
-which will allow other requests to succeed without throttling the database.
-But in general, you should try and avoid using scan operations if you can.
-Instead, design your tables in a way that you can use the Query, Get,
-or BatchGetItem APIs.
-And the second option is that you can use parallel scans. So by default,
-a scan operation processes data sequentially,
-and it returns it in 1 megabyte increments before moving on to retrieve
-the next 1 megabyte of data.
-And it can only scan 1 partition at a time. However,
-you can configure DynamoDB to use parallel scans instead by
-logically dividing a table or index into segments,
-and then scanning each segment in parallel.
-And this can work really well if your database is not already really busy.
-However,
-it's best to avoid parallel scans if your table or index is already incurring
-heavy, read/write activity from other applications,
-because the parallel scans could well impact the other applications.
-And you can also isolate your scan operations to specific tables
-and segregate them from your mission-critical data and your mission-critical
-traffic,
-even if that means writing data to 2 different tables.
-And that's just another way that you can improve the performance of your
-DynamoDB scans.
-So what are our scan and query exam tips? Well,
-just remember a scan operation examines every item in the table.
-By default, it returns all the data attributes,
-but you can use the ProjectionExpression parameter to refine the results,
-and you can also use the filter like I did earlier.
-So I use the filter to refine the results to products,
-which had a price greater than 100.
-A query operation finds items in the table using only the primary key
-attribute.
-And you need to provide a distinct value to search for.
-So remember when I searched in the table for a product ID of 202,
-and then the query operation found that product for me.
-Query results are always sorted by the sort key if there is one.
-They're sorted by default in ascending order,
-and you can use the ScanIndexForward parameter to false to reverse
-the order for queries only.
-Reduce the impact of your query or scan by setting a smaller page size,
-which uses fewer read operations. And for scans,
-you can also try to isolate the scan operations to specific tables.
-Alternatively, try out parallel scans rather than the default sequential scan.
-And remember, a query operation is generally more efficient than a scan.
-However, in general, avoid using scan operations if you can,
-and design your tables in a way that can use the Query,
-Get or BatchGetItem APIs. So that is the end of this lecture.
-If you have any questions, please let me know. If not,
-please feel free to move on to the next lecture. Thank you.
+-----------------------------------------
+--- DynamoDB scan and query API calls ---
+-----------------------------------------
+- There's 2 different ways of getting your information out of the database. And this lecture is just going to discuss the differences between the two.
+those
+1. Scan
+2. Queries
+
+------------------------
+--- What is a query? ---
+------------------------
+- A query operation finds items in your table based on the primary key attribute and also a distinct value to search for.
+- For example, if you're looking for an item where the user ID is equal to 212, you're going to query the DynamoDB table based on the primary key of user ID, and the value will be 212, and that will select all the attributes for that item.
+
+So for example, if you were storing the first name, surname, email, etc, all those attributes would come up in that query. And you can use an optional sort key name and value to refine the results if you have multiple results.
+For example, if your sort key is a timestamp, you can refine the query to select only the items with a timestamp of the last 7 days.
+So for example, you might want to query the last time a user logged into a forum, the last time they posted in a forum, that kind of thing.
+
+- Now by default, a query returns all the attributes for the items, but you can use the ProjectionExpression parameter if you want the query to only return specific attributes that you're looking for.
+For example, if you only wanted to see the user ID and email address, rather than all the attributes for that item in the table.
+
+- Results are always sorted by the sort key. If they're numeric, they're sorted in numeric order. And that by default is in ascending order, so 1, 2, 3, 4. And if they're ASCII characters, they are also sorted by default in ascending order. And you can reverse the order by setting the ScanIndexForward parameter to false. This only applies to queries, and unfortunately, they've called it ScanIndexForward, but it does only apply to queries.
+- So just remember that. If you see any questions relating to ScanIndexForward parameter, it's relating to queries and not scan, and it's to reverse the order of the results from your query.
+- By default, all queries are eventually consistent, but you can set them to be strongly consistent, but you need to explicitly set the query to be strongly consistent.
+
+-----------------------
+--- What is a scan? ---
+-----------------------
+- A scan operation examines every single item in the table.
+- And by default, it returns all the data attributes. Once again, you can use the ProjectionExpression parameter to refine your scan results to return only the attributes you're looking for. And you can also filter the results of the scan once it's been run.
+
+--- Demo in AWS Console ---
+- But it's a lot easier to understand the difference between scans and queries if I actually show you in the console.
+- In AWS console --->>> DynamoDB section --->>> Tables --->>> Tables we setup at the beginning of this Lesson
+- So, first of all, I'm going to head to the ProductCatalog table and click on Items. And these are all the items in my ProductCatalog table.
+
+--- Query ---
+- So first of all, I'm going to run a query. So I'm going to select Query in this dropdown, and I can query based on the partition key.
+- And for this table, the partition key is the ID. So it's the product ID, and it's this attribute here in this ID column. So I can query based on one of these attribute IDs. Now it's already picked up that our partition key is the ID, and that it is a numerical value.
+- And it's in this box here that we enter the value that we want to search for. So I'm going to search for a product with the product ID of 201, hit start Search,
+- And it's found my product with the product ID of 201. So now let's compare this to a scan operation.
+
+--- Scan ---
+- So if we select Scan from the dropdown, click on Start Search, and it will give me the entire table. So then if I want to refine these results, then I need to add a filter. So I'm going to click on Add Filter, and I can create a filter based on any of these attributes, but I'm going to create a filter based on price.
+- So in here, we add our attribute. It's going to be price. It's going to be a numerical value. So I'll change that to number, and you get a load of choices in here. So I can search for items of a specific price or greater than, or less than, or between 2 values.
+- So I'm going to search for items with a price greater than 100. So I'm going to select greater than or equal to 100. Select Start Search. And it will apply that filter to my scan.
+- But the one thing to remember with a scan is even when you're applying a filter, it's first dumping the data. So it's showing you the entire table, and then it's applying a filter on top of that to show us only the results we're looking for.
+
+
+--- What should we use? - A query or a scan? ---
+- A query is much more efficient than a scan because the scan dumps the entire table, then filters out the unwanted values to provide the desired result. And this adds the extra step of removing the data that you don't want. And as the table grows, the scan operation takes longer and longer.
+- And a scan operation on a large table can actually use up the provision throughput for a large table in just one single operation.
+- And there are some ways to improve performance. So you can reduce the impact of a query or scan by setting a smaller page size, which uses fewer read operations.
+- For example, you can set the page size to return 40 items. And this means that you will end up with a larger number of small operations, which will allow other requests to succeed without throttling the database.
+- But in general, you should try and avoid using scan operations if you can. Instead, design your tables in a way that you can use the Query, Get, or BatchGetItem APIs. And the second option is that you can use parallel scans. So by default, a scan operation processes data sequentially, and it returns it in 1 megabyte increments before moving on to retrieve the next 1 megabyte of data. And it can only scan 1 partition at a time. However, you can configure DynamoDB to use parallel scans instead by logically dividing a table or index into segments, and then scanning each segment in parallel.
+- And this can work really well if your database is not already really busy. However, it's best to avoid parallel scans if your table or index is already incurring heavy, read/write activity from other applications, because the parallel scans could well impact the other applications.
+- And you can also isolate your scan operations to specific tables and segregate them from your mission-critical data and your mission-critical traffic, even if that means writing data to 2 different tables. And that's just another way that you can improve the performance of your DynamoDB scans.
+
+
+-----------------
+--- Exam tips ---
+-----------------
+- A scan operation examines every item in the table. By default, it returns all the data attributes, but you can use the ProjectionExpression parameter to refine the results, and you can also use the filter like I did earlier.
+- So I use the filter to refine the results to products, which had a price greater than 100.
+- A query operation finds items in the table using only the primary key attribute. And you need to provide a distinct value to search for. So remember when I searched in the table for a product ID of 202, and then the query operation found that product for me.
+- Query results are always sorted by the sort key if there is one. They're sorted by default in ascending order, and you can use the ScanIndexForward parameter to false to reverse the order for queries only.
+- Reduce the impact of your query or scan by setting a smaller page size, which uses fewer read operations. And for scans, you can also try to isolate the scan operations to specific tables.
+- Alternatively, try out parallel scans rather than the default sequential scan.
+- And remember, a query operation is generally more efficient than a scan.
+- However, in general, avoid using scan operations if you can, and design your tables in a way that can use the Query, Get or BatchGetItem APIs.
