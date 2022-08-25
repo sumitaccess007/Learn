@@ -1,0 +1,176 @@
+--------------------
+--- DynamoDB TTL ---
+--------------------
+- It's also known as DynamoDB Time to Live. So what is DynamoDB TTL?
+- TTL, or Time to Live, it's an attribute which defines an expiry time for your data. So you define an expiry time, and expired items are automatically marked for deletion. And once an item has been marked for deletion, that means it's going to be deleted within the next 48 hours. And this is really good for removing any irrelevant or old data, so data that's no longer useful to your application. So think session data, event logs, any temporary data. So any data that's no longer useful to your application after a certain period of time.
+- And this is going to really help to reduce costs for storing data in DynamoDB because it automatically removes data, which you no longer need. So the data is no longer relevant.
+So it just does that housekeeping for you and automatically deletes the data.
+So let's take a look at how that actually works within DynamoDB.
+And I've got an example Session Data table here.
+So we're just storing the user ID, session ID, session creation time,
+and the Time to Live, and then finally the session data itself.
+And the first thing you're probably going to notice is that Time to Live is
+expressed in a pretty strange format.
+It's expressed in the epoch time format.
+And if you haven't heard of that before, it's also known as Unix time,
+and it's also known as POSIX time as well.
+And epoch time or Unix time or POSIX time, that is a numerical value.
+And it represents the number of seconds which have elapsed since 12:00 AM
+on January the 1st, 1970. So even before I was born. In fact,
+a long time before I was born.
+And probably a long time before a lot of you were born as well.
+So that is just the way that Unix systems see time.
+And that's how they express time as a numerical value. Now, in this example,
+I'm setting the expiration time on our item,
+and I'm setting it for 2 hours after the session originally began.
+And don't worry,
+you can just use one of these really useful translation websites.
+And I've got one to show you. I'm just going to head over there now.
+So this is the website I normally use. It's just called EpochConverter,
+but you I'm sure you can find one just by Googling or use your favorite one.
+And you can just go in and set the day,
+set the hour to what you want to,
+and then just translate it into an epoch timestamp.
+So that is the kind of thing that you can use if you are defining your
+TTL.
+And it's this epoch time number which actually allows DynamoDB to
+easily compare your Time to Live to the current time right now.
+And in this example,
+the expiration of this item is set for 2 hours after the session
+originally began. And so when the current time is greater than the TTL,
+the item is going to be expired and it gets marked for deletion.
+And then within the next 48 hours, it's actually going to be deleted.
+So that's actually quite a long window between being marked for deletion and
+actually getting deleted. So in order to cater for that,
+you can actually filter out any expired items from your queries and scans.
+But let's take a look at how this actually works within the DynamoDB console.
+But first of all, we're going to need to create our own DynamoDB table.
+And I prepared a couple of commands that we're going to run.
+And before we do that,
+you just need to make sure of course that your AWS CLI is configured
+with credentials of a user who has the correct permissions to go
+ahead and create DynamoDB tables.
+So the first thing I'm going to do is I'm going to type aws iam get-user.
+And this is just going to tell us which user we have used when we configured the
+AWS CLI. So when we ran AWS configure,
+this is the user credentials that I used originally.
+So I'm just going to come back to my console and just double-check the
+credentials of that particular user. So I'm going to go to Services,
+and then IAM. I'm going to find my user.
+So it was faye.
+And I'm just going to check that that user has the correct permissions.
+So my users actually got administrator access,
+but if you don't have any DynamoDB access, you don't,
+if you didn't have administrator access on that account,
+then you can just go ahead and Add Permissions, go to Attach Existing Policies,
+and then just search for DynamoDB. And you can add DynamoDB Full Access
+to that user, and that will make sure that you have access to use DynamoDB.
+So once you're happy with that, I'm going to come back to the console,
+and I've actually prepared a couple of commands that we're going to run.
+So we're going to run one command to firstly create our new table,
+and then we're going to run another command to populate the table.
+So I'll show you those commands before we run them.
+And these are going to be included in a text file in the resources of the
+course. So you'll be able to just copy and paste these.
+So the first command is this one,
+and this actually creates our Session Data table. So first of all,
+it runs the create table command. It provides a table name of SessionData,
+and then it defines our primary key, which it calls it the hash key.
+And that's just an alternative name that they use for the primary key or the
+partition key. So we're going to define our hash key as being the user ID,
+and the attribute type is going to be of type number. And then finally,
+the last thing we'd stipulate in this command is the provisioned throughput read
+capacity units of 5 and write capacity units of 5.
+So you just copy that command, and don't worry,
+you don't need to understand all of the different options.
+You don't need to understand the DynamoDB commands,
+the CLI commands for the exam. They're not going to test you on that.
+It's just the quickest way to create the table for the purposes of this lecture.
+So come back to the terminal.
+I'm going to paste that into my terminal and hit Enter.
+And hopefully if that's been successful,
+you should see this kind of output summarizing what we've done in DynamoDB.
+And then the next command we're going to run is going to perform a
+BatchWriteItem,
+and this is going to write a number of items into our new table.
+And it takes as input this, this request items file,
+which is going to be a file called items.json.
+And you're going to need to download this from the resources section of the
+course. So if I show you items.json,
+it's simply a json file which is going to create these items in our
+Session Data table.
+So the first thing it does is it stipulates the name of the table,
+which is SessionData, and then it defines a number of Put requests,
+and the items that we're actually going to put into that table.
+So we've got our user ID. It's going to be a number.
+This number here is the actual user ID.
+Then we've got the session creation time, expiration time,
+and a session ID as well. So it just creates 3 different items,
+which it's going to put into the table. So if we come back to our command.
+I'm just going to copy and paste that.
+Okay, and if that's successful,
+we can come back to our console and we can just check whether that table got
+created successfully. So come to Services,
+DynamoDB,
+and make sure that you are in the correct region where you have run aws
+configure. So on my system,
+I'm in us-east-1.
+So I just need to make sure that I am looking at the us-east-1 region,
+which I am. And then if we go to Tables, and there is our Session Data table.
+So if you click on the table, click on Items,
+and that should be the items that we have just populated.
+So if that has run successfully for you,
+you should have 3 items in your table with a user ID, creation time,
+expiry time, and a session ID.
+And I've just set this expiry time to midnight tonight.
+And today is the 6th of December.
+So I have set the expiration time for these items to be the
+6th of December at midnight. So you might want to update this,
+set it to midnight tonight for whatever day it is when you are watching this
+lecture. So if you want to do that once again,
+just go back to the EpochConverter,
+and you can create an epoch timestamp using whatever date you want to.
+So Let's say February the 2nd, 2019.
+You can just configure the date you want and then grab the epoch timestamp.
+And you can set it to whatever hour, minute, and second you want as well,
+and set whatever the local time is for wherever you are located.
+So feel free to go in and update that expiration time if you want to follow
+along on this lecture. So once you're happy with all of that,
+we can actually go ahead and stop playing around with the Time to Live for these
+items. So if you head to Actions,
+click on Manage TTL.
+And the first thing it's going to ask you to do is define which attribute you
+are basing the Time to Live on.
+And we are going to be using this expiration time as our TTL
+attribute.
+So you need to just type in the name of your attribute,
+and DynamoDB actually allows you to preview TTL before you actually go
+ahead and apply it. So we can, first of all,
+we can run a preview based on previewing items expiring by 3:30
+on today's date. So I'm just going to hit Run Preview,
+and that's what we should expect to see.
+We shouldn't expect it to see any items expiring by 3:30 today
+because all of these items are set to expire at midnight tonight.
+So let's just change that to December the 7th
+and midnight, and we can run the preview again,
+and there we are.
+It should catch all 3 of those items because they are due you to expire
+at midnight.
+So if you want to go ahead and configure Time to Live for all of these items,
+you can hit Continue. And then if we go back to Overview,
+you should see under the Table Details the Time to Live attribute.
+It's configured as the attribute that we defined earlier,
+so the expiration time. So that is DynamoDB TTL.
+The main thing to remember is that you can use it to define expiration times for
+your data.
+It will mark your data for expiration as soon as the current time is greater
+than the TTL. The item will then be expired, marked for deletion,
+and then deleted within 48 hours.
+It's great for removing irrelevant or old data,
+for example, session data, event logs,
+and temporary data that your application no longer requires.
+And this is great because it saves you money and reduces the cost of your
+DynamoDB table by automatically removing data,
+which is no longer relevant or useful to your application.
+So that is everything you need to know about TTL. If you have any questions,
+please let me know. If not, feel free to move on to the next lecture. Thank you.
