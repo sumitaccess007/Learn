@@ -1,73 +1,41 @@
-Hello Cloud Gurus, and welcome to this lecture. And in this lecture,
-we're going to cover DynamoDB Accelerator,
-and it's also known as DAX. So let's get started.
-So what is DAX? Well, DynamoDB Accelerator, or DAX,
-is a fully managed, clustered, in-memory cache for DynamoDB.
-And it really gives you a massive performance improvement for your DynamoDB
-tables, but only for read performance.
-And they claim that it can deliver up to a 10x read performance.
-That really is significant. So it gives you microsecond performance,
-and for millions of requests per second.
-So it's ideal for read-heavy and also bursty read workloads,
-for example, auction applications, gaming applications,
-and retail sites specifically during black Friday promotions or at
-Christmas time, or any time when they have a special promotion on.
-So for example,
-just think of a retail website and they're running a big promotion.
-They've got all their product catalog data in DynamoDB. Of course,
-while those promotions are on and while there's really good bargains to be had,
-a lot of people are going to be wanting to look at their website,
-look at all the information about their products,
-and decide which products they're going to buy. So in that situation,
-DynamoDB would get really hit really hard. There'll be many,
-many read operations.
-And that's a really good example of when you could use DAX to improve the read
-performance for all of those different calls. So how does it work?
-Well DAX is a write-through caching service,
-and this means that data is written to the cache as well as the backend store at
-the same time.
-So that means that any time the DynamoDB table gets updated,
-you add a new item, or you modify an item.
-As well as writing that change into DynamoDB,
-it also gets written to DAX as well.
-It also allows you to point your API calls at the DAX cluster.
-So instead of having your application query DynamoDB,
-it will try and query the DAX cluster first.
-And if the item you're looking for is in the cache, and that's a cache hit,
-DAX will then return the result to the application.
-However, if the item is not available, and that's a cache miss,
-then DAX performs an eventually consistent GetItem operation against DynamoDB.
-So it gets the item out of DynamoDB, it writes into its cache,
-and it also hands it back to the application.
-So retrieval of data from DAX reduces the read load on your DynamoDB tables.
-And in some cases,
-you may even be able to reduce the provisioned read capacity on your
-tables. So that means you can save some money on your DynamoDB bill. But
-what is it not suitable for? Well,
-it caters for eventually consistent reads only.
-So it's not going to be suitable for applications that require strongly
+----------------------------------
+--- DynamoDB Accelerator (DAX) ---
+----------------------------------
+- What is DAX?
+- DynamoDB Accelerator, or DAX, is a fully managed, clustered, in-memory cache for DynamoDB.
+- And it really gives you a massive performance improvement for your DynamoDB tables, but only for read performance.
+- And they claim that it can deliver up to a 10x read performance. That really is significant. So it gives you microsecond performance, and for millions of requests per second.
+- So it's ideal for read-heavy and also bursty read workloads, for example, auction applications, gaming applications, and retail sites specifically during black Friday promotions or at Christmas time, or any time when they have a special promotion on.
+- For example,
+- just think of a retail website and they're running a big promotion. They've got all their product catalog data in DynamoDB. Of course, while those promotions are on and while there's really good bargains to be had, a lot of people are going to be wanting to look at their website, look at all the information about their products, and decide which products they're going to buy.
+- So in that situation, DynamoDB would get really hit really hard. There'll be many, many read operations. And that's a really good example of when you could use DAX to improve the read performance for all of those different calls.
+
+
+-------------------------
+--- How does it work? ---
+-------------------------
+- DAX is a write-through caching service, and this means that data is written to the cache as well as the backend store at
+the same time. So that means that any time the DynamoDB table gets updated, you add a new item, or you modify an item. As well as writing that change into DynamoDB, it also gets written to DAX as well.
+- It also allows you to point your API calls at the DAX cluster. So instead of having your application query DynamoDB, it will try and query the DAX cluster first.
+- And if the item you're looking for is in the cache, and that's a cache hit, DAX will then return the result to the application. However, if the item is not available, and that's a cache miss, then DAX performs an eventually consistent GetItem operation against DynamoDB. So it gets the item out of DynamoDB, it writes into its cache, and it also hands it back to the application.
+- So retrieval of data from DAX reduces the read load on your DynamoDB tables.
+- And in some cases, you may even be able to reduce the provisioned read capacity on your tables. So that means you can save some money on your DynamoDB bill.
+
+- But what is it not suitable for?
+- It caters for eventually consistent reads only. So it's not going to be suitable for applications that require strongly
 consistent reads.
-So if your application really requires strongly consistent reads,
-DAX is not going to be a benefit in that situation.
-It's also not really suitable for write-intensive applications.
-So you're not going to get a benefit from using DAX because it only helps with
-read operations. Also,
-applications that don't perform that many read operations are
-not really going to see a benefit from configuring DAX,
-and the same goes for applications that don't require microsecond response
-times. There's no point in configuring it if you don't need that low latency.
-So what are our exam tips? Well,
-just remember DAX provides in-memory caching for your DynamoDB tables.
-It improves the response times for eventually consistent reads only.
-When a write operation occurs,
-data is written to the DynamoDB Accelerator cache and
-the DynamoDB abackend store at the same time.
-You point your API calls at the DAX cluster instead of your table.
-If the item you're querying is on the cache, DAX will return it. Otherwise,
-it's going to perform an eventually consistent GetItem operation to your
-DynamoDB table.
-And it is not suitable for write-intensive applications,
-or applications that require strongly consistent reads.
-So that's the end of this lecture. If you have any questions,
-please let me know. If not, please feel free to move on to the next lecture.
-Thank you.
+- So if your application really requires strongly consistent reads, DAX is not going to be a benefit in that situation.
+- It's also not really suitable for write-intensive applications. So you're not going to get a benefit from using DAX because it only helps with read operations.
+- Also, applications that don't perform that many read operations are not really going to see a benefit from configuring DAX, and the same goes for applications that don't require microsecond response times. There's no point in configuring it if you don't need that low latency.
+
+
+-----------------
+--- Exam tips ---
+-----------------
+- Just remember DAX provides in-memory caching for your DynamoDB tables.
+- It improves the response times for eventually consistent reads only.
+- When a write operation occurs, data is written to the DynamoDB Accelerator cache and the DynamoDB abackend store at the same time.
+- You point your API calls at the DAX cluster instead of your table.
+- If the item you're querying is on the cache, DAX will return it. Otherwise, it's going to perform an eventually consistent GetItem operation to your DynamoDB table.
+- And it is not suitable for write-intensive applications, or applications that require strongly consistent reads.
+
