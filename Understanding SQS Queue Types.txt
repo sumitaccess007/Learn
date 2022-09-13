@@ -1,0 +1,44 @@
+-------------------------------------
+--- Different types of SQS Queues ---
+-------------------------------------
+- There are 2 different types of SQS Queue available, and we're going to go through both of these and the main difference between the 2 is how they handle the ordering messages.
+
+1. Standard queues
+- Which are the default. And these provide best effort ordering.
+
+2. FIFO queues
+- Which stands for first, in first out, and with a FIFO queue, the ordering of messages is strictly preserved.
+
+-----------------------
+--- Standard queues ---
+-----------------------
+- So with a Standard queue, you get a nearly unlimited number of transactions per second.
+- They guarantee that a message will be delivered at least once, and you get best effort ordering.
+- So Standard queues provide best effort ordering, which ensures that messages are generally delivered in the same order that they were sent, but occasionally because of the highly distributed architecture, which allows such high throughput, more than one copy of a message may be delivered and messages might be delivered out of order as well.
+- So here is a high-level view of a Standard queue.
+- We've got six messages in the queue and they are almost in the right order, but there are a couple of messages here that are not in order, and we've got a duplicate as well.
+
+
+-------------------
+--- FIFO queues ---
+-------------------
+- So how does this compare with FIFO queues?
+- Well, FIFO as you know, it stands for first-in-first-out delivery.
+- So the order in which messages are sent and received is strictly preserved.
+- You get exactly-once processing. So a message is delivered once and it remains available until a consumer processes and deletes it after processing and duplicates are not introduced.
+- Now, there is a limit of 300 transactions per second with FIFO queue, but apart from that, a FIFO queue has all the same capabilities of a Standard queue.
+- So here is a high-level example.
+- We've got five messages in our FIFO queue, and they are all ordered perfectly, with no duplicate introduced.
+
+- And this is great for banking applications, for example, where the order that a transaction happens is very important, and you can't afford to have your transactions duplicated, or processed in the wrong order. So it's really good for financial applications or financial transactions. Anything where you need the jobs to be processed in a specific order. 
+
+
+-----------------
+--- Exam Tips ---
+-----------------
+- With Standard queues, you get best-effort ordering. A message will be delivered at least once, however, you may experience occasional duplicates.
+- And a Standard queue is a default queue type.
+- And with FIFO just remember that stands for first-in-first-out, and the message order is strictly preserved. Messages are delivered once only. No duplicates are introduced.
+- And it's a great option for banking transactions, which needs to happen in a strict order, and you cannot afford to introduce duplicate transactions.
+- So that is everything you should need to know about the different types of queue available with SQS.
+
