@@ -1,0 +1,45 @@
+-----------------------------------
+--- SQS settings and parameters ---
+-----------------------------------
+
+Amazon SQS short and long polling -
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
+
+Amazon SQS FAQs -
+https://aws.amazon.com/sqs/faqs/
+
+
+--- Visibility Timeout ---
+Visibility Timeout --->>> Important topic for Exam
+- So Visibility Timeout is the amount of time that a message is invisible in the SQS queue, after a reader or a consumer picks up that message.
+- So here are our application servers and they are consuming messages from the queue, and we can see that this is a standard queue because we have one message here, which is not in the correct order, so it cannot be a FIFO queue.
+- So our application server polls the queue, and picks up the first message and begins processing, and as soon as that happens, the message becomes invisible, and by default, this timeout is 30 seconds.
+- So effectively the application server has 30 seconds to finish processing the message.
+- Now, ideally, the job will be processed before the visibility timeout expires and the message will then be deleted from the queue. However, if the job is not processed within that time, then the message is going to become visible again, and another reader or consumer will pick it up and begin processing. And this could happen for a number of reasons, maybe our application is running slowly. Maybe the application crashed, or maybe even our EC2 instance crashed.
+- So what do we do if our application needs longer than 30 seconds to finish processing a message? What if there's nothing wrong with our application at all, but maybe it just takes it to process a message?
+- Well, that is where we need to change the visibility timeout. So by default, the visibility timeout is 30 seconds, and if a task is going to take on average, more than 30 seconds to complete, then you're going to need to increase the visibility timeout. And the maximum is 12 hours. So you can set the timeout for up to 12 hours.
+
+
+-----------------------------------------
+--- Short Polling versus Long Polling ---
+-----------------------------------------
+- Short Polling returns a response immediately, even if the message queue being polled is empty. And the problem with this, is that it can result in a lot of empty responses if there's nothing in the queue, and you are still going to pay for these empty responses. So it's adding additional cost to your AWS bill.
+- Even though there's nothing in the queue, you are still being charged for the empty responses.
+
+- So what is the alternative?
+- Well, the alternative is Long Polling and with Long Polling your consumers periodically poll the queue, and Long Polling does not return a response until a message arrives in the message queue or until the long poll times out.
+- So this can save you money, which is always a good thing.
+- And in general, under most circumstances, Long Polling is, is preferable to Short Polling.
+
+- So if you do see a question in the exam where they've got a scenario, and they're asking you how to save money with SQS and how to avoid receiving empty responses, then the answer is to configure Long Polling, which periodically polls the queue, and it only returns a response when a message appears or the long poll times out.
+- And if you see a question which is asking you, which one should you choose Long Polling or Short Polling, then always go for Long Polling.
+
+-----------------
+--- Exam Tips ---
+-----------------
+- Visibility Timeout is the length of time that our message remains invisible while it is being processed.
+- The default is 30 seconds, and you'll need to increase it if the task generally takes more than 30 seconds to complete, and the maximum you can set it to is 12 hours.
+- And with Short Polling, a response is returned immediately, even if there are no messages in the queue. And you'll pay for all the empty responses, so it costs you money, even if there's nothing in the queue.
+- Whereas with Long Polling this periodically polls the queue, and it only returns a response when a message is in the queue, or when the long polling timeout is reached.
+- And of course Long Polling is the most cost-effective option, and generally it is the preferred option.
+- If you have to choose between Short Polling and Long Polling always choose Long Polling.
